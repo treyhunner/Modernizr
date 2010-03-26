@@ -21,7 +21,7 @@
 
 
 <script>
- window.localStorage && document.write('localStorage.getItem("modernizr1.2pre") is: ' + (!!localStorage.getItem('modernizr1.2pre') ? 'PRESENT' : 'EMPTY') + '<br>');
+ window.sessionStorage && document.write('sessionStorage.getItem("modernizr1.2pre") is: ' + (!!sessionStorage.getItem('modernizr1.2pre') ? 'PRESENT' : 'EMPTY') + '<br>');
 
 	var start = +new Date();
 </script>
@@ -79,7 +79,7 @@ Modernizr.addTest('datauri',function(){
     return;
   }
   
-  window.localStorage && document.write('localStorage.getItem(modernizr'+Modernizr._version+') == ' + localStorage.getItem('modernizr'+Modernizr._version) + '<br>');
+  window.sessionStorage && document.write('sessionStorage.getItem(modernizr'+Modernizr._version+') == ' + sessionStorage.getItem('modernizr'+Modernizr._version) + '<br>');
   
   for (var prop in Modernizr) {
 	  if (typeof Modernizr[prop] === 'function') continue;

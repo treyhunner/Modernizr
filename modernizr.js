@@ -697,9 +697,9 @@ window.Modernizr = (function(window,doc,undefined){
     
     
     // CURRENTLY DISABLED COMPLETELY.
-    isAgentCookieable = false && tests[localstorage]() && window.JSON && JSON.parse && JSON.stringify;
+    isAgentCookieable =  tests[sessionstorage]() && window.JSON && JSON.parse && JSON.stringify;
     if (isAgentCookieable){
-        cookie = (cookie = localStorage.getItem( cookiestr ) ) && JSON.parse(cookie);
+        cookie = (cookie = sessionStorage.getItem( cookiestr ) ) && JSON.parse(cookie);
         if (cookie) ret = cookie;
     }
 
@@ -720,7 +720,7 @@ window.Modernizr = (function(window,doc,undefined){
     // store the cookie for the first time.
     if (isAgentCookieable && !cookie){
         
-        localStorage.setItem( cookiestr , JSON.stringify(ret) );
+        sessionStorage.setItem( cookiestr , JSON.stringify(ret) );
     }
     
    
