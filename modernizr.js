@@ -115,6 +115,24 @@ window.Modernizr = (function( window, document, undefined ) {
       return !!ret;
 
     },
+    
+    // Test CSS property and value by injecting element with styles and testing computed style
+    testStyle = function( prop, value ) {
+      var prefixed = prefixes.join(prop + ':' + value + ';');
+        
+      return injectElementWithStyles('#modernizr { '+prefixed+' }',function(elem){
+          for(var i = 0; i<prefixes.length; i++) {
+              if(window.getComputedStyle ?
+                  // Some computed properties don't work when accessing through array ,getPropertyValue will work instead
+                  getComputedStyle(elem, null).getPropertyValue(prefixes[i] + prop) :
+                  // some values are camelcase but when returned as computed style are lowercase
+                  elem.currentStyle[prefixes[i] + prop] == value.toLowerCase()) {
+                return true;
+                break;
+              }
+          }
+      });
+    },
 
 
     // adapted from matchMedia polyfill
@@ -1036,6 +1054,7 @@ window.Modernizr = (function( window, document, undefined ) {
     Modernizr.event         = isEventSupported; // Modernizr.hasEvent('gesturestart')
     Modernizr.testAllProps  = testPropsAll;     // Modernizr.testAllProps('box-sizing')
     Modernizr.testProp      = testProps;        // Modernizr.testProp('pointer-events')
+    Modernizr.testStyle        = testStyle;        // Modernizr.testStyle('image-rendering','optimizeSpeed')
     Modernizr.styleElem     = injectElementWithStyles; // Modernizr.styleElem('#omg { position:absolute }',callback)
 
     // Remove "no-js" class from <html> element, if it exists:
