@@ -118,17 +118,26 @@ window.Modernizr = (function( window, document, undefined ) {
     
     // Test CSS property and value by injecting element with styles and testing computed style
     testStyle = function( prop, value ) {
-      var prefixed = prefixes.join(prop + ':' + value + ';');
-        
+      var prefixed = '',
+          len = prefixes.length,
+          curProp;
+          
+      while(len--) {
+        curProp = prefixes[len]+prop;
+        prefixed += (curProp + ':' +  prefixes.join(value + ';' + curProp + ':')).slice(0, -curProp.length-1);
+      }
+      
       return injectElementWithStyles('#modernizr { '+prefixed+' }',function(elem){
-          for(var i = 0; i<prefixes.length; i++) {
-              if(window.getComputedStyle ?
-                  // Some computed properties don't work when accessing through array ,getPropertyValue will work instead
-                  getComputedStyle(elem, null).getPropertyValue(prefixes[i] + prop) :
-                  // some values are camelcase but when returned as computed style are lowercase
-                  elem.currentStyle[prefixes[i] + prop] == value.toLowerCase()) {
-                return true;
-                break;
+          for(var i = 0, len = prefixes.length; i<len; i++) {
+              for(var k = 0; k<len; k++) {
+                  if((window.getComputedStyle ?
+                    // Some computed properties don't work when accessing through array, getPropertyValue will work instead.
+                    getComputedStyle(elem, null).getPropertyValue(prefixes[i] + prop) :
+                    // some values are camelcase but when returned, as a computed style, are lowercase.
+                    elem.currentStyle[prefixes[i] + prop]) == prefixes[k] + value.toLowerCase()) {
+                      return true;
+                      break;
+                  }
               }
           }
       });
