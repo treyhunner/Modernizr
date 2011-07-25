@@ -139,7 +139,7 @@ window.Modernizr = (function( window, document, undefined ) {
                 */
      testSelector = function( selector ) {
      
-       var ret = false, style, sheet, rules, cssText;
+       var ret = false, style, sheet, rules, cssText, insertRule;
            qS = document.querySelector;
        
        if(!!qS) {
@@ -151,18 +151,29 @@ window.Modernizr = (function( window, document, undefined ) {
          return ret;
        }
        
-       ret = injectElementWithStyles(selector + '{}', function( node ) {
+       ret = injectElementWithStyles( selector + '{}', function( node ) {
          style = node.lastChild;
          sheet = style.sheet || style.styleSheet;
          rules = sheet.cssRules || sheet.rules;
-         cssText = sheet.cssRules && sheet.cssRules[0] ? rules[0].cssText : sheet.cssText || "";
+         insertRule = sheet.insertRule;
+         cssText = sheet.cssRules && sheet.cssRules[0] ? rules[0].cssText : sheet.cssText || '';
          
          /* Easy way out for IE8+ and other browser that don't support querySelector */
          if( sheet && !rules.length ) {
            return false;
          } else {
-           // Some pseudo element properties that have equivilent pseudo classes e.g ::first-line will return false positive so do a indexOf check
-           return !/unknown/i.test( cssText ) && !~~cssText.indexOf(selector);
+           // insertRule will work the same way as querySelector an invalid style will throw an exception
+           if( insertRule ) {
+             try {
+               sheet.insertRule( selector + '{}', 0 );
+               ret = true;
+             } catch(e){}
+             
+             return ret;
+           } else {
+             // Some pseudo element properties that have equivilent pseudo classes e.g ::first-line will return false positive so do a indexOf check
+             return !/unknown/i.test( cssText ) && !~~cssText.indexOf( selector );
+           }
          }
        });
        
