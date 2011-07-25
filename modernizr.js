@@ -130,6 +130,46 @@ window.Modernizr = (function( window, document, undefined ) {
 
      },
 
+     
+     /* Inspiration for some of the code was taken from the following locations 
+                    // http://javascript.nwbox.com/CSSSupport/
+                    // http://jsfiddle.net/leaverou/Pmn8m/
+                    // http://jsfiddle.net/rwaldron/v5J6f/
+                    // Pass in a CSS selector to check if it's supported or valid
+                */
+     testSelector = function( selector ) {
+     
+       var ret = false, style, sheet, rules, cssText;
+           qS = document.querySelector;
+       
+       if(!!qS) {
+         try {
+            qS.call( document, selector );
+            ret = true;
+         } catch( e ){}
+         
+         return ret;
+       }
+       
+       ret = injectElementWithStyles(selector + '{}', function( node ) {
+         style = node.lastChild;
+         sheet = style.sheet || style.styleSheet;
+         rules = sheet.cssRules || sheet.rules;
+         cssText = sheet.cssRules && sheet.cssRules[0] ? rules[0].cssText : sheet.cssText || "";
+         
+         /* Easy way out for IE8+ and other browser that don't support querySelector */
+         if( sheet && !rules.length ) {
+           return false;
+         } else {
+           // Some pseudo element properties that have equivilent pseudo classes e.g ::first-line will return false positive so do a indexOf check
+           return !/unknown/i.test( cssText ) && !~~cssText.indexOf(selector);
+         }
+       });
+       
+       return ret;
+     
+     },
+
 
     /**
       * isEventSupported determines if a given element supports the given event
@@ -1073,6 +1113,8 @@ window.Modernizr = (function( window, document, undefined ) {
     // Modernizr.testAllProps('boxSizing')    
     Modernizr.testAllProps  = testPropsAll;     
 
+    // Modernizr.testAllProps('boxSizing')    
+    Modernizr.selector  = testSelector;   
 
     
     // Modernizr.testStyles() allows you to add custom styles to the document and test an element afterwards

@@ -335,6 +335,37 @@ test('Modernizr.mq: media query testing',function(){
 });
 
 
+test('Modernizr.selector()', function() {
+
+    /*
+                Run this js code on css3 selectors spec page: http://www.w3.org/TR/css3-selectors/
+                var nodes = document.querySelectorAll(".selectorsReview .pattern");
+                nodes = Array.prototype.slice.call(nodes);
+                var arr = [];
+
+                nodes.forEach(function(el,i){
+                    arr.push(el.textContent.replace(/\s/gi,""));
+                });
+
+                arr;
+            */
+    ok(typeof Modernizr.selector == 'function','Modernizr.selector() is a function');
+    
+    var cssselectors = ["*", "E", "E[foo]", "E[foo='bar']", "E[foo~='bar']", "E[foo^='bar']", "E[foo$='bar']", "E[foo*='bar']", "E[foo|='en']", "E:root", "E:nth-child(n)", "E:nth-last-child(n)", "E:nth-of-type(n)", "E:nth-last-of-type(n)", "E:first-child", "E:last-child", "E:first-of-type", "E:last-of-type", "E:only-child", "E:only-of-type", "E:empty", "E:link", "E:visited", "E:active", "E:hover", "E:focus", "E:target", "E:lang(fr)", "E:enabled", "E:disabled", "E:checked", "E::first-line", "E::first-letter", "E::before", "E::after", "E.warning", "E#myid", "E:not(s)", "E F", "E>F", "E+F", "E~F"];
+    
+    TEST.forEach(cssselectors,function(selector, index) {
+        ok(Modernizr.selector(selector),selector + ': should return true in any modern browser');
+    });
+    
+    /* Some fake selectors that should fail, but I can dream they'll one day pass */
+    var fakecssselectors = ["::hammertime", "parent<child", "hulk&smash"];
+    
+    TEST.forEach(fakecssselectors,function(selector, index) {
+        ok(!Modernizr.selector(selector),'Unfortunately the "'+selector+'" selector is yet to be supported');
+    });
+
+});
+
 
 
 test('Modernizr.hasEvent()',function(){
